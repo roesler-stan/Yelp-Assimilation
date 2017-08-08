@@ -15,6 +15,7 @@ Data sources:
     nativity for whites: B05003A: ACS_14_5YR_B05003A_with_ann.csv
     nativity for hispanics: B05003H: ACS_14_5YR_B05003H_with_ann.csv
     year of entry by nativity: B05005: ACS_14_5YR_B05005_with_ann.csv
+    Hispanic/Latino origin: B03001: ACS_14_5YR_B03001_with_ann.csv
 """
 
 import pandas as pd
@@ -33,8 +34,9 @@ def main():
     language_filename = in_directory + 'ACS_14_5YR_S1601_with_ann.csv'
     nativity_filenames = [in_directory + col for col in ['ACS_14_5YR_B05003A_with_ann.csv', 'ACS_14_5YR_B05003H_with_ann.csv']]
     nativity_year_filename = in_directory + 'ACS_14_5YR_B05005_with_ann.csv'
+    hispanic_origin = in_directory + 'ACS_14_5YR_B03001_with_ann.csv'
     
-    residents_data = residents(residents_filename)
+    residents_data = clean_residents(residents_filename)
     inc_data = clean_inc(inc_filename)
     emp_data = emp(emp_filename)
     hisp_data = hispanic(hisp_filename)
@@ -43,6 +45,7 @@ def main():
     language_data = language(language_filename)
     nativity_data = nativity(nativity_filenames)
     nativity_year_data = nativity_year(nativity_year_filename, residents_data)
+    hisp_origin_data = hisp_origin(hispanic_origin)
 
     full_data = pd.merge(residents_data, inc_data, how = 'outer', on = ['Id2', 'Geography'])
     full_data = pd.merge(full_data, emp_data, how = 'outer', on = ['Id2', 'Geography'])
@@ -52,6 +55,7 @@ def main():
     full_data = pd.merge(full_data, language_data, how = 'outer', on = ['Id2', 'Geography'])
     full_data = pd.merge(full_data, nativity_data, how = 'outer', on = ['Id2', 'Geography'])
     full_data = pd.merge(full_data, nativity_year_data, how = 'outer', on = ['Id2', 'Geography'])
+    full_data = pd.merge(full_data, hisp_origin_data, how = 'outer', on = ['Id2', 'Geography'])
 
     full_data['nativity_pct_foreign_hispanic'] = ((full_data['nativity_h_noncitizen'] + full_data['nativity_h_foreign_naturalised']) \
         / full_data['total_residents']) * 100
@@ -61,11 +65,34 @@ def main():
     full_data = make_floats(full_data)
     full_data.to_csv(outfile, header = True, index = False, quotechar = '"')
 
-def residents(filename):
+
+def hisp_origin(infile):
+    df = read_noheaders(infile)
+
+    prefix_in = 'Estimate; Total:'
+    prefix_out = 'hisp_origin_'
+    non_hispanic = prefix_in + ' - Not Hispanic or Latino'
+    hispanic = prefix_in + ' - Hispanic or Latino:'
+    mexican = prefix_in + ' - Hispanic or Latino: - Mexican'
+
+    desired_cols = ['Id2', 'Geography', prefix_in, non_hispanic, hispanic, mexican]
+    df = df[desired_cols]
+    df = df.rename(columns = {prefix_in: prefix_out + 'total', non_hispanic: prefix_out + 'nonhisp',
+        hispanic: prefix_out + 'hisp', mexican: prefix_out + 'mexican'})
+    df = df.rename(columns = lambda x: x.lower())
+    df = df.rename(columns = {'id2': 'Id2', 'geography': 'Geography'})
+
+    df['origin_hisp_pct'] = (df[prefix_out + 'hisp'] / df[prefix_out + 'total']) * 100
+    df['origin_mexican_pct'] = (df[prefix_out + 'mexican'] / df[prefix_out + 'total']) * 100
+    df = df[['Id2', 'Geography', 'origin_hisp_pct', 'origin_mexican_pct']]
+    return df
+
+def clean_residents(filename):
     df = read_noheaders(filename)
     df = df.rename(columns = {'Total; Estimate; Total population': 'total_residents'})
     df = df[['Id2', 'Geography', 'total_residents']]
     return df
+
 
 def clean_inc(filename):
     df = read_noheaders(filename)
@@ -102,11 +129,13 @@ def hispanic(filename):
     df = df[['Id2', 'Geography', 'ethnicity_mexican_percent', 'ethnicity_white_percent']]
     return df
 
+
 def foreign_born(filename):
     df = read_noheaders(filename)
     df['percent_foreign_born'] = (df['Foreign born; Estimate; Total population'] / df['Total; Estimate; Total population']) * 100
     df = df[['Id2', 'Geography', 'percent_foreign_born']]
     return df
+
 
 def educ(filenames):
     white_educ = read_noheaders(filenames[0])
@@ -189,10 +218,12 @@ def nativity_year(filename, residents_data):
     entered_00to09 = df['Estimate; Entered 2000 to 2009 - Foreign born:']
     entered_90to99 = df['Estimate; Entered 1990 to 1999: - Foreign born:']
     entered_before_90 = df['Estimate; Entered before 1990: - Foreign born:']
-    entered_foreign = entered_10_later + entered_00to09 + entered_90to99 + entered_before_90
-    total = df['total_residents']
+    entered_foreign = df['Estimate; Total:']
+    entered_foreign_sum = entered_10_later + entered_00to09 + entered_90to99 + entered_before_90
+    total = df['total_residents'].astype(float)
 
     df['pct_foreign_entered'] = (entered_foreign / total) * 100
+    df['pct_foreign_entered_sum'] = (entered_foreign_sum / total) * 100
     df['pct_foreign_entered_after_2010'] = (entered_10_later / total) * 100
     df['pct_foreign_entered_00to09'] = (entered_00to09 / total) * 100
     df['pct_foreign_entered_90to99'] = (entered_90to99 / total) * 100
@@ -201,7 +232,8 @@ def nativity_year(filename, residents_data):
     df['pct_foreign_entered_before_2010'] = ((entered_before_90 + entered_90to99 + entered_00to09) / total) * 100
     df['pct_foreign_entered_after_1999'] = ((entered_00to09 + entered_10_later) / total) * 100
     df['pct_foreign_entered_after_1989'] = ((entered_90to99 + entered_00to09 + entered_10_later) / total) * 100
-    df = df[['Id2', 'Geography', 'pct_foreign_entered', 'pct_foreign_entered_after_2010', 'pct_foreign_entered_00to09',
+    df = df[['Id2', 'Geography', 'pct_foreign_entered', 'pct_foreign_entered_sum',
+    'pct_foreign_entered_after_2010', 'pct_foreign_entered_00to09',
     'pct_foreign_entered_90to99', 'pct_foreign_entered_before_90', 'pct_foreign_entered_before_2000', 'pct_foreign_entered_before_2010',
     'pct_foreign_entered_after_1999', 'pct_foreign_entered_after_1989']]
 

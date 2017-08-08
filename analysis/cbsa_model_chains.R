@@ -38,5 +38,5 @@ outfile <- "models_chains.doc"
 htmlreg(list(model1, model2, model3, model4),
         center = F, file = outfile, digits = 2,
         custom.model.names = c("Model 1", "Model 2", "Model 3", "Model 4"),
-        caption = paste0('Linear Regression Predicting % Reviews Mentioning Mexican'),
+        caption = paste0("Chains' Linear Regression Predicting % Reviews Mentioning Mexican"),
         caption.above = T, inline.css = F, longtable = T)

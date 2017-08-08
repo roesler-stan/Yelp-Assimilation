@@ -1,16 +1,17 @@
 library(ggplot2)
 library(plyr)
+library(grid)
+library(gridExtra)
 
 setwd("/Users/katharina/Dropbox/Projects/Yelp/Output/plots")
 
-
-ggplot(cbsa_data, aes(x = cbsa_dissim_idx_hisp_2010)) + geom_histogram(aes(y = ..density..), bins = 100)
-
+# ggplot(cbsa_data, aes(x = cbsa_dissim_idx_hisp_2010)) + geom_histogram(aes(y = ..density..), bins = 100)
 
 ggplot(cbsa_data, aes_string(x = "cbsa_ethnicity_mexican_percent", y = "mexican_present")) +
   geom_point(size = 1) +
   #geom_smooth(method = "loess", color = "red", se = F, size = 0.4) +
-  theme_bw() + xlab("Percent Mexican") + ylab("Percent Reviews Mention Mexican") +
+  theme_bw() + xlab("Percent Residents Mexican") + ylab("Percent Reviews Mention Mexican") +
+  theme(text = element_text(family="serif")) +
   ggtitle("Percent Reviews Mentioning Mexican")
 ggsave("mexican.png", dpi = 250)
 
@@ -45,52 +46,6 @@ ggplot(cbsa_data, aes_string(x = "cbsa_ethnicity_mexican_percent", y = "mexican_
 ggsave("mexican_log_topbusiness.png", dpi = 250)
 
 
-ggplot(cbsa_data_chains, aes_string(x = "cbsa_ethnicity_mexican_percent",
-                                      y = "mexican_present")) +
-  geom_point() +
-  #geom_smooth(method = "loess", color = "red", se = F, size = 0.4) +
-  theme_bw() + xlab("Percent Mexican") + ylab("Percent Reviews Mention Mexican") +
-  ggtitle("Chains' Percent Reviews Mentioning Mexican") + scale_x_log10()
-ggsave("chains_mexican.png", dpi = 250)
-
-ggplot(cbsa_data_nochains, aes_string(x = "cbsa_ethnicity_mexican_percent",
-                                      y = "mexican_present")) +
-  geom_point() +
-  #geom_smooth(method = "loess", color = "red", se = F, size = 0.4) +
-  theme_bw() + xlab("Percent Mexican") + ylab("Percent Reviews Mention Mexican") +
-  ggtitle("Non-Chains' Percent Reviews Mentioning Mexican") + scale_x_log10()
-ggsave("nochains_mexican.png", dpi = 250)
-
-
-ggplot(cbsa_data, aes_string(x = "cbsa_nativity_pct_foreign_hispanic", y = "mexican_present")) +
-  geom_point(size = 1) + geom_smooth(method = "lm", color = "red", se = F, size = 0.4) +
-  theme_bw() + xlab("Percent Residents are Foreign-Born Hispanics") + ylab("Percent Reviews Mention Mexican") +
-  ggtitle("Percent Reviews Mentioning Mexican")
-ggsave("foreign_hisp.png", dpi = 250)
-
-ggplot(cbsa_data, aes_string(x = "cbsa_nativity_pct_foreign_hispanic", y = "mexican_present")) +
-  geom_point(size = 1) + geom_smooth(method = "lm", color = "red", se = F, size = 0.4) +
-  theme_bw() + xlab("Percent Residents are Foreign-Born Hispanics") + ylab("Percent Reviews Mention Mexican") +
-  ggtitle("Percent Reviews Mentioning Mexican") + scale_x_log10()
-ggsave("foreign_hisp_log.png", dpi = 250)
-
-ggplot(cbsa_data, aes_string(x = "cbsa_nativity_pct_foreign_hispanic", y = "mexican_present",
-                             label = "cbsa_cbsaname")) +
-  geom_text(size = 1.8) + guides(size = F, color = F) +
-  geom_smooth(method = "loess", color = "red", se = F, size = 0.4) +
-  theme_bw() + xlab("Percent Mexican") + ylab("Percent Reviews Mention Mexican") +
-  ggtitle("Percent Reviews Mentioning Mexican by Percent Mexican")
-ggsave("foreign_hisp_text.png", dpi = 250)
-
-
-ggplot(cbsa_data, aes_string(x = "cbsa_nativity_h_foreign_pct", y = "mexican_present")) +
-  geom_point(size = 1) + geom_smooth(method = "loess", color = "red", se = F, size = 0.4) +
-  theme_bw() + xlab("Percent of Hispanics Foreign-Born") + ylab("Percent Reviews Mention Mexican") +
-  ggtitle("Percent Reviews Mentioning Mexican")
-ggsave("hisp_foreign.png", dpi = 250)
-#grep('foreign', names(cbsa_data), value = T)
-
-
 ggplot(cbsa_data, aes_string(x = "cbsa_percent_foreign_born", y = "mexican_present",
                              label = "cbsa_cbsaname")) +
   geom_point(size = 0.8) + geom_smooth(method = "loess", color = "red", se = F, size = 0.4) +
@@ -106,8 +61,8 @@ ggplot(cbsa_data, aes_string(x = "cbsa_nativity_pct_foreign_entered", y = "mexic
 ggsave("foreign_entered.png", dpi = 250)
 
 
-ggplot(cbsa_data, aes_string(x = "cbsa_nativity_pct_foreign_entered_after_1999", y = "mexican_present",
-                             label = "cbsa_cbsaname")) +
+ggplot(cbsa_data, aes_string(x = "cbsa_nativity_pct_foreign_entered_after_1999",
+                             y = "mexican_present", label = "cbsa_cbsaname")) +
   geom_point(size = 1) + guides(size = F, color = F) +
   geom_smooth(method = "loess", color = "red", se = F, size = 0.4) +
   theme_bw() + xlab("Percent Foreign Born Entered US after 1999") +

@@ -48,7 +48,7 @@ ggplot(present_data, aes(x = reorder(variable, mean), y = mean, fill = category)
   xlab("Theme") + ylab("Percentage of Reviews") +
   scale_fill_brewer(palette = "Accent", name = "Category") +
   theme_bw() + theme(axis.text.x = element_text(angle = 60, vjust = 0.5)) + ylim(0, 50)
-ggsave("themes_all.png", dpi = 300, width = 12, height = 10)
+ggsave("themes_all.png", dpi = 300)
 
 
 # Only mexican and authentic
@@ -57,17 +57,17 @@ p <- ggplot(plot_data, aes(x = variable, y = mean, fill = category)) +
   geom_bar(position = "dodge", stat = "identity") +
   ggtitle("Percentage of Reviews with each Theme") +
   xlab("Theme") + ylab("Percentage of Reviews") +
-  scale_fill_brewer(palette = "Accent", name = "Category") +
-  theme_bw() + theme(axis.text.x = element_text(angle = 60, vjust = 0.5, size = 12),
-                     axis.title = element_text(size = 16)) +
+  scale_fill_brewer(palette = "Accent", name = "Category") + theme_bw() +
+  theme(text = element_text(family="serif")) +
   geom_errorbar(aes(ymax = mean + se, ymin = mean - se), width=0.8,
                 position = position_dodge(width=0.9))
 
 g <- arrangeGrob(p, sub = textGrob("Note: Data are from Yelp Academic Challenge, Round 8.  Black lines represent standard errors.",
                                    x = unit(0.02, "npc"), just = "left",
-                                   gp = gpar(fontsize = 10)), nrow = 2, heights = c(20, 1))
+                                   gp = gpar(fontsize = 10, fontfamily="serif")),
+                 nrow = 2, heights = c(20, 1))
 
-ggsave("themes.png", g, dpi = 300, width = 12, height = 10)
+ggsave("themes.png", g, dpi = 300)
 
 
 
@@ -101,9 +101,8 @@ p1 <- ggplot(subset(plot_data, state=="AZ"),
     ggtitle("Phoenix, AZ") + xlab("") + ylab("% Reviews") +
     geom_errorbar(aes(ymax = mean + se, ymin = mean - se), width=0.8,
                   position = position_dodge(width=0.9)) +
-  scale_fill_manual(values = my.cols, name = "Category") +
-  theme_bw() + theme(axis.text.x = element_text(angle = 60, vjust = 0.5),
-                   legend.position="none") + ylim(0, 45)
+  scale_fill_manual(values = my.cols, name = "Category") + theme_bw() +
+  theme(text = element_text(family="serif"), legend.position="none") + ylim(0, 45)
 
 p2 <- ggplot(subset(plot_data, state=="IL"),
              aes(x = variable, y = mean, fill = category)) +
@@ -111,13 +110,13 @@ p2 <- ggplot(subset(plot_data, state=="IL"),
   ggtitle("Urbana-Champaign, IL") + xlab("") + ylab("% Reviews") +
   geom_errorbar(aes(ymax = mean + se, ymin = mean - se), width=0.8,
                 position = position_dodge(width=0.9)) +
-  scale_fill_manual(values = my.cols, name = "Category") +
-  theme_bw() + theme(axis.text.x = element_text(angle = 60, vjust = 0.5),
-                   legend.position="none") + ylim(0, 45)
+  scale_fill_manual(values = my.cols, name = "Category") + theme_bw() +
+  theme(text = element_text(family="serif"), legend.position="none") + ylim(0, 45)
   
 p1.leg <- ggplot(subset(plot_data, state=="AZ"),
                  aes(x = variable, y = mean, fill = category)) +
   geom_bar(position = "dodge", stat = "identity") +
+  theme(text = element_text(family="serif")) +
   scale_fill_manual(values = my.cols, name = "Category")
   
 g_legend <- function(a.gplot){
@@ -130,5 +129,6 @@ legend <- g_legend(p1.leg)
 g <- grid.arrange(arrangeGrob(p1, p2, legend, ncol=3, widths=c(3/7,3/7,1/7)))
 g2 <- arrangeGrob(g, sub = textGrob("Note: Data are from Yelp Academic Challenge, Round 8.  Black lines represent standard errors.",
                                     x = unit(0.02, "npc"), just = "left",
-                                    gp = gpar(fontsize = 8)), nrow = 2, heights = c(20, 1))
+                                    gp = gpar(fontsize = 8, fontfamily="serif")),
+                  nrow = 2, heights = c(20, 1))
 ggsave("themes_Phoenix_Urbana.png", g2, dpi = 300)

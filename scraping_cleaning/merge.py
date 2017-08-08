@@ -26,6 +26,10 @@ def main():
     df = clean_reviews(infile)
     filenames = (acs_zip_file, zip_to_county_file, zip_to_cbsa_file, states_file, cbsa_summary_file, acs_cbsa_file)
     df = merge_data(df, filenames)
+
+    cps_file = data_directory + 'cps_intermarriage_stats.csv'
+    cps_data = pd.read_csv(cps_file)
+    df = df.merge(cps_data, left_on = ['cbsa'], right_on = ['metfips'], suffixes = ['', '_cps'], how = 'left')
     
     df.to_csv(outfile, index = False, header = True)
     df[:100].to_csv(outfile_small, index = False, header = True)

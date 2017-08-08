@@ -8,6 +8,7 @@ import wordcloud as wc
 import matplotlib.pyplot as plt
 import nltk
 
+
 def main():
     data_directory = '../../Data/'
     output_directory = '../../Output/'
@@ -27,6 +28,7 @@ def main():
     max_words = 2000
     masked_cloud(adjectives_text, outfile_adj, max_words, mask_file)
 
+
 def masked_cloud(text, outfile, max_words, mask_file):
     """ Make a word cloud in the shape of the mask file's black parts """
     mask_shape = numpy.array(Image.open(mask_file))
@@ -35,6 +37,7 @@ def masked_cloud(text, outfile, max_words, mask_file):
     word_cloud.generate(text)
     word_cloud.to_file(outfile)
 
+
 def select_text(dataset):
     """ Take dataset with reviews column and return text from all reviews. """
     reviews = dataset['review'].to_string()
@@ -42,6 +45,7 @@ def select_text(dataset):
     while '  ' in reviews:
         reviews = reviews.replace('  ', ' ')
     return reviews
+
 
 def parse_text(text, lemmatize):
     text = text.lower()
@@ -56,6 +60,7 @@ def parse_text(text, lemmatize):
     # Check for named entities (e.g. "Pride and Prejudice" vs. pride) - this step takes a long time
     entities = nltk.chunk.ne_chunk(tagged)
     return entities
+
 
 if __name__ == '__main__':
     main()

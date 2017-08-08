@@ -13,8 +13,6 @@ load(academic_image)
 
 length(unique(academic_data$business_id))
 
-table(academic_data$year)
-
 # Otherwise, clean the data
 academic_cols <- names(read.csv(academic_file, nrows = 100))
 academic_cols
