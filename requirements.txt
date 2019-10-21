@@ -64,7 +64,7 @@ mistune==0.7.1
 multiprocessing==2.6.2.1
 nbconvert==4.1.0
 nbformat==4.0.1
-nltk==3.2.1
+nltk==3.4.5
 notebook==4.1.0
 numpy==1.10.4
 oauth2==1.9.0.post1
