@@ -47,7 +47,7 @@ iron-celery==0.4.5
 iron-core==1.2.0
 iron-mq==0.8
 itsdangerous==0.24
-Jinja2==2.7.3
+Jinja2==2.11.3
 jmespath==0.9.0
 joblib==0.9.3
 jsonschema==2.5.1
