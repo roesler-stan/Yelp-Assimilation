@@ -90,7 +90,7 @@ python-dateutil==2.5.3
 python-engineio==0.8.6
 python-socketio==0.9.1
 pytz==2015.7
-PyYAML==3.11
+PyYAML==5.4
 pyzmq==15.2.0
 qtconsole==4.1.1
 redis==2.10.5
