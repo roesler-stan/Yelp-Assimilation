@@ -3,7 +3,7 @@ amqp==1.4.8
 anyjson==0.3.3
 appnope==0.1.0
 awsebcli==3.7.6
-Babel==2.1.1
+Babel==2.9.1
 backports-abc==0.4
 backports.ssl-match-hostname==3.5.0.1
 beautifulsoup4==4.4.1
