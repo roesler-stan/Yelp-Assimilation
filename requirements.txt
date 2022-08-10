@@ -62,7 +62,7 @@ mechanize==0.2.5
 memory-profiler==0.40
 mistune==0.7.1
 multiprocessing==2.6.2.1
-nbconvert==4.1.0
+nbconvert==6.3.0
 nbformat==4.0.1
 nltk==3.2.1
 notebook==4.1.0
