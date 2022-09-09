@@ -60,7 +60,7 @@ MarkupSafe==0.23
 matplotlib==1.5.1
 mechanize==0.2.5
 memory-profiler==0.40
-mistune==0.7.1
+mistune==0.8.1
 multiprocessing==2.6.2.1
 nbconvert==4.1.0
 nbformat==4.0.1
