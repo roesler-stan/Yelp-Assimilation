@@ -77,7 +77,7 @@ patsy==0.4.1
 pexpect==4.0.1
 pickleshare==0.5
 Pillow==3.0.0
-protobuf==2.6.1
+protobuf==3.18.3
 psutil==3.3.0
 psycopg2==2.6.1
 ptyprocess==0.5
