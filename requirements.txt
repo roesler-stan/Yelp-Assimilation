@@ -14,7 +14,7 @@ brewer2mpl==1.4.1
 cairocffi==0.7.2
 celery==3.1.19
 cement==2.8.2
-certifi==2015.11.20.1
+certifi==2022.12.7
 cffi==1.5.2
 click==6.2
 colorama==0.3.7
